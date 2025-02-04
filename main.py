@@ -8,10 +8,10 @@ df = load_google_sheet()
 
 with st.sidebar:
     st.markdown("<h2 style='font-size:150%; text-align: center; color: black; padding: 0px 0px 0px 0px;'" +
-                ">Painel de Controle</h2>", unsafe_allow_html=True)
+                ">Gestor de Imóveis</h2>", unsafe_allow_html=True)
     st.markdown('---')
     st.markdown("<h3 style='font-size:100%; text-align: center; color: black; padding: 0px 0px 20px 0px;'" +
-                ">Controle de Datas</h3>", unsafe_allow_html=True)
+                ">🗓️ Filtro de Datas</h3>", unsafe_allow_html=True)
 
     col1, col2 = st.columns([1, 1])
     with col1:
@@ -75,17 +75,17 @@ with st.sidebar:
     st.markdown('---')
 
     st.markdown("<h3 style='font-size:100%; text-align: center; color: black; padding: 0px 0px 20px 0px;'" +
-                ">Controle de Valores (R$)</h3>", unsafe_allow_html=True)
+                "> 💰 Filtro de Valores (R$)</h3>", unsafe_allow_html=True)
 
     valor_total_max = df['VALOR_TOTAL'].max()
     valor_total_min = df['VALOR_TOTAL'].min()
     col11, col22 = st.columns([1, 1])
     with col1:
-        valor_min = col11.number_input('Total | Mínimo:',
+        valor_min = col11.number_input('Aluguel | Mínimo:',
                                             min_value=valor_total_min, max_value=valor_total_max,
                                             value=valor_total_min, step=1.0, key=261)
     with col2:
-        valor_max = col22.number_input('Total | Máximo:',
+        valor_max = col22.number_input('Aluguel | Máximo:',
                                             min_value=valor_total_min, max_value=valor_total_max,
                                             value=valor_total_max, step=1.0, key=262)
 
@@ -124,7 +124,7 @@ with st.sidebar:
     st.markdown('---')
 
     st.markdown("<h3 style='font-size:100%; text-align: center; color: black; padding: 0px 0px 20px 0px;'" +
-                ">Controle de Informações da Reserva</h3>", unsafe_allow_html=True)
+                "> 📋 Filtro de Informações da Reserva</h3>", unsafe_allow_html=True)
 
 
     search_descricao = st.text_input('Pesquisar Descrição:')
@@ -145,6 +145,12 @@ with st.sidebar:
     df = df[df['FORMA_PAGAMENTO'].isin(selected_pagamento)]
 
     st.markdown('---')
+
+
+
+
+
+
 
 tab1, tab2 = st.tabs(["📊 DASHBOARD", "📂 BASE DE DADOS"])
 
@@ -170,7 +176,7 @@ with tab1:
     else:
         df = df[df['INQUILINO'].str.contains(search_inquilino, case=False)]
 
-    with st.expander('Controle Avançado'):
+    with st.expander('🏡 Filtro Imóveis e Envolvidos na Locação'):
 
         st.markdown('---')
 
@@ -205,74 +211,132 @@ with tab1:
     locacao_contagem = int(df['ID_LOCACAO'].count())
     imoveis_contagem = (df.groupby('COD_IMOVEL').count().reset_index(drop=False)).shape[0]
 
-    col1, col2, col3 = st.columns(3)
-    col1.metric("Imóveis Total", imoveis_contagem)
-    col2.metric("Reservas Total", locacao_contagem)
-    col3.metric("Dias com Reserva", dias_reserva_soma)
 
     col1, col2, col3 = st.columns(3)
-    col1.metric("Comissão Média (%)", comissao_media)
-    col2.metric("Diária Média (R$)", media_valor_diaria)
-    col3.metric("Aluguel Total (R$)", valor_total_soma)
+    col1.markdown(f"""
+        <p style='font-size:100%; text-align: left; margin-bottom: 0px; line-height: 1; font-weight: 500;'>
+            Imóveis Total</p>
+        <p style='color: #8a0045; font-size:300%; text-align: left; margin-top: -5px; font-weight: 600;'>
+            {imoveis_contagem}</p>""", unsafe_allow_html=True)
+
+    col2.markdown(f"""
+            <p style='font-size:100%; text-align: left; margin-bottom: 0px; line-height: 1; font-weight: 500;'>
+                Reservas Total</p>
+            <p style='color: #8a0045; font-size:300%; text-align: left; margin-top: -5px; font-weight: 600;'>
+                {locacao_contagem}</p>""", unsafe_allow_html=True)
+
+    col3.markdown(f"""
+            <p style='font-size:100%; text-align: left; margin-bottom: 0px; line-height: 1; font-weight: 500;'>
+                Dias com Reserva</p>
+            <p style='color: #8a0045; font-size:300%; text-align: left; margin-top: -5px; font-weight: 600;'>
+                {dias_reserva_soma}</p>""", unsafe_allow_html=True)
 
 
+    col1, col2, col3 = st.columns(3)
+    col1.markdown(f"""
+        <p style='font-size:100%; text-align: left; margin-bottom: 0px; line-height: 1; font-weight: 500;'>
+            Comissão Média</p>
+        <p style='color: #00008b; font-size:300%; text-align: left; margin-top: -5px; font-weight: 600;'>
+            {comissao_media}%</p>""", unsafe_allow_html=True)
+
+    col2.markdown(f"""
+            <p style='font-size:100%; text-align: left; margin-bottom: 0px; line-height: 1; font-weight: 500;'>
+                Diária Média</p>
+            <p style='color: #8a008a; font-size:300%; text-align: left; margin-top: -5px; font-weight: 600;'>
+                R$ {media_valor_diaria}</p>""", unsafe_allow_html=True)
+
+    col3.markdown(f"""
+            <p style='font-size:100%; text-align: left; margin-bottom: 0px; line-height: 1; font-weight: 500;'>
+                Aluguel Total</p>
+            <p style='color: #8a008a; font-size:300%; text-align: left; margin-top: -5px; font-weight: 600;'>
+                R$ {valor_total_soma}</p>""", unsafe_allow_html=True)
 
     valor_comissao_soma = int(df['VALOR_COMISSAO'].sum())
     valor_comissao_diaria_media = int(df['VALOR_COMISSAO_DIARIA'].mean())
     comissao_reserva = int(valor_comissao_soma / locacao_contagem)
 
-
     col1, col2, col3 = st.columns(3)
-    col1.metric("Comissão por Reserva (R$)", comissao_reserva)
-    col2.metric("Comissão Diária Média (R$)", valor_comissao_diaria_media)
-    col3.metric("Comissão Total (R$)", valor_comissao_soma)
+    col1.markdown(f"""
+            <p style='font-size:100%; text-align: left; margin-bottom: 0px; line-height: 1; font-weight: 500;'>
+                Comissão por Reserva</p>
+            <p style='color: #00008b; font-size:300%; text-align: left; margin-top: -5px; font-weight: 600;'>
+                R${comissao_reserva}</p>""", unsafe_allow_html=True)
+
+    col2.markdown(f"""
+                <p style='font-size:100%; text-align: left; margin-bottom: 0px; line-height: 1; font-weight: 500;'>
+                    Comissão Diária Média</p>
+                <p style='color: #00008b; font-size:300%; text-align: left; margin-top: -5px; font-weight: 600;'>
+                    R$ {valor_comissao_diaria_media}</p>""", unsafe_allow_html=True)
+
+    col3.markdown(f"""
+                <p style='font-size:100%; text-align: left; margin-bottom: 0px; line-height: 1; font-weight: 500;'>
+                    Comissão Total</p>
+                <p style='color: #00008b; font-size:300%; text-align: left; margin-top: -5px; font-weight: 600;'>
+                    R$ {valor_comissao_soma}</p>""", unsafe_allow_html=True)
 
 
     st.markdown('---')
 
+
+
+
     col1, col2 = st.columns([1, 1])
     with col1:
-        st.markdown("<h2 style='font-size:120%; text-align: center; color: black; padding: 10px 0px 10px 0px;'" +
-                    ">Clientes por total de pedidos</h2>", unsafe_allow_html=True)
+        st.markdown("<p style='font-size:130%; text-align: center; color: black; padding: 0px 0px 0px 0px; font-weight: 500;'" +
+                    ">Imóveis por Número de Reservas</p>", unsafe_allow_html=True)
 
         uf_usuario = df.groupby('COD_IMOVEL', as_index=False)['ID_LOCACAO'].count().sort_values('ID_LOCACAO',
                                                                                                 ascending=False).reset_index(
             drop=True)
-        fig4 = bar_plot_horiz(uf_usuario.head(5), 'COD_IMOVEL', 'ID_LOCACAO',
-                              '#FFD700', 'ID_LOCACAO', 'auto', 'black', dict(l=10, r=10, b=10, t=10))
+        fig4 = bar_plot_horiz(uf_usuario.head(10), 'COD_IMOVEL', 'ID_LOCACAO',
+                              '#000080', 'Imóveis','Total de Reservas')
         st.plotly_chart(fig4, use_container_width=True, config={"displayModeBar": False})
 
     with col2:
-        st.markdown("<h2 style='font-size:120%; text-align: center; color: black; padding: 10px 0px 10px 0px;'" +
-                    ">Clientes por total de pedidos</h2>", unsafe_allow_html=True)
+        st.markdown("<p style='font-size:130%; text-align: center; color: black; padding: 0px 0px 0px 0px; font-weight: 500;'" +
+                    ">Imóveis por Receita do Aluguel</p>", unsafe_allow_html=True)
 
         uf_usuario = df.groupby('COD_IMOVEL', as_index=False)['VALOR_TOTAL'].sum().sort_values('VALOR_TOTAL',
                                                                                                 ascending=False).reset_index(
             drop=True)
-        fig5 = bar_plot_horiz(uf_usuario.head(5), 'COD_IMOVEL', 'VALOR_TOTAL',
-                              '#FFD700', 'VALOR_TOTAL', 'auto', 'black', dict(l=10, r=10, b=10, t=10))
+        fig5 = bar_plot_horiz(uf_usuario.head(10), 'COD_IMOVEL', 'VALOR_TOTAL',
+                              '#000080', 'Imóveis','Aluguel Total')
         st.plotly_chart(fig5, use_container_width=True, config={"displayModeBar": False})
 
 
 
     col1, col2 = st.columns([1, 1])
     with col1:
+        st.markdown(
+            "<p style='font-size:130%; text-align: center; color: black; padding: 0px 0px 0px 0px; font-weight: 500;'" +
+            ">Reservas Ativas ao longo do tempo</p>",unsafe_allow_html=True)
         fig7 = linha(df)
         st.plotly_chart(fig7, use_container_width=True, config={"displayModeBar": False})
 
     with col2:
+        st.markdown(
+            "<p style='font-size:130%; text-align: center; color: black; padding: 0px 0px 0px 0px; font-weight: 500;'" +
+            ">Ganho Diário ao longo do tempo</p>",unsafe_allow_html=True )
         fig8 = linha_valor_diaria(df)
         st.plotly_chart(fig8, use_container_width=True, config={"displayModeBar": False})
 
     col1, col2 = st.columns([1, 1])
     with col1:
+        st.markdown(
+            "<p style='font-size:130%; text-align: center; color: black; padding: 0px 0px 0px 0px; font-weight: 500;'" +
+            ">Reservas por Dia da Semana e Mês</p>", unsafe_allow_html=True)
 
         fig9 = plot_hotmap1(df)
         st.plotly_chart(fig9, use_container_width=True, config={"displayModeBar": False})
 
     with col2:
+        st.markdown(
+            "<p style='font-size:130%; text-align: center; color: black; padding: 0px 0px 0px 0px; font-weight: 500;'" +
+            ">Aluguel por Dia da Semana e Mês</p>", unsafe_allow_html=True)
         fig10 = plot_hotmap2(df)
         st.plotly_chart(fig10, use_container_width=True, config={"displayModeBar": False})
+
+    st.markdown('---')
 
 with tab2:
     st.dataframe(df)

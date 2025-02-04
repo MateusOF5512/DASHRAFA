@@ -141,7 +141,7 @@ def get_month_name(date):
 
     return str(mes_nome)
 
-def bar_plot_horiz(df, categico, numerico, cor1, y_name, textposition, colortext, margin):
+def bar_plot_horiz(df, categico, numerico, cor1, y_name, x_name):
 
     df[numerico] = df[numerico].astype(int)
     df[categico] = df[categico].astype(str)
@@ -149,58 +149,28 @@ def bar_plot_horiz(df, categico, numerico, cor1, y_name, textposition, colortext
 
     fig = go.Figure()
     fig.add_trace(go.Bar(
-        x=df[numerico], y=df[categico], text=df[numerico], textposition=textposition, insidetextanchor='end', name='',
-        textfont=dict(color=colortext, family='Arial'),
+        x=df[numerico], y=df[categico], text=df[numerico], textposition='auto', insidetextanchor='end', name='',
+        textfont=dict(color='white', family='sans-serif'),
         textangle=0,
         hovertemplate="</br>"+y_name+": <b>%{y}</b>" +
-                      "</br>Total: <b>%{x}</b>",
+                      "</br>"+x_name+": <b>%{x}</b>",
         orientation='h',
         marker_color=cor1))
 
     fig.update_layout(
-        paper_bgcolor="#F8F8FF", plot_bgcolor="#F8F8FF", font={'color': "#000000", 'family': "sans-serif"},
-        height=300, margin=margin, autosize=False, dragmode=False )
+        paper_bgcolor="white", plot_bgcolor="white", font={'color': "black", 'family': "sans-serif"},
+        height=300, margin=dict(l=10, r=10, b=10, t=10), autosize=False, dragmode=False)
     fig.update_yaxes(
-        title_font=dict(family='Sans-serif', size=10),
-        tickfont=dict(family='Sans-serif', size=12), nticks=20, showgrid=True,
-        gridwidth=0.5, gridcolor='#D3D3D3')
+        title_text='Top 10 Imóveis', title_font=dict(family='Sans-serif', size=14, color='black'),
+        tickfont=dict(family='Sans-serif', size=12, color='black'), nticks=20, showgrid=False)
     fig.update_xaxes(
-        tickfont=dict(family='Sans-serif', size=10), nticks=5,
+        title_text=x_name, title_font=dict(family='Sans-serif', size=14, color='black'),
+        tickfont=dict(family='Sans-serif', size=10, color='black'), nticks=8,
         showgrid=True, gridwidth=0.8, gridcolor='#D3D3D3')
 
 
     return fig
 
-
-def linha_data(df, tempo, variavel):
-
-
-    fig = go.Figure()
-
-    fig.add_trace(go.Scatter(
-        x=df[tempo], y=df[variavel], name='',
-        mode='lines+markers',
-        line=dict(width=1, color='#197119'),
-        marker=dict(line=dict(width=0.5),size=3, symbol='diamond', color='#197119'),
-        stackgroup='one',
-    ))
-
-
-    fig.update_layout(
-        showlegend=True, xaxis_type='category',
-        paper_bgcolor="#F8F8FF", plot_bgcolor="#F8F8FF", font={'color': "#000000", 'family': "sans-serif"},
-        legend=dict(font_size=10, orientation="h", yanchor="top", y=1.40, xanchor="center", x=0.50),
-        height=300, hovermode="x unified", autosize=False, dragmode=False, margin=dict(l=20, r=20, b=20, t=20)
-    )
-    fig.update_yaxes(
-        tickfont=dict(family='Sans-serif', size=12), nticks=5, showgrid=True, gridwidth=0.5, gridcolor='#D3D3D3'
-    )
-    fig.update_xaxes(
-        title_text="Semanas do Ano", title_font=dict(family='Sans-serif', size=10),
-        tickfont=dict(family='Sans-serif', size=12), showgrid=False, gridwidth=0.5, gridcolor='#D3D3D3'
-    )
-
-    return fig
 
 
 def linha(df):
@@ -232,21 +202,22 @@ def linha(df):
 
     # Adicionar as linhas verticais pontilhadas
     for domingo in domingos:
-        fig.add_vline(x=domingo, line_dash="dot", line_color="gray", opacity=0.5)
+        fig.add_vline(x=domingo, line_dash="dot", line_color="gray", opacity=0.3)
 
     # Melhorando o layout
     fig.update_layout(
-        xaxis_title="",
-        yaxis_title="Número de Reservas Ativas",
         xaxis=dict(tickangle=90),
-        template="plotly_white"
-    )
+        template="plotly_white",
+        height=300, margin=dict(l=10, r=10, b=10, t=10))
+
 
     fig.update_yaxes(
-        tickfont=dict(family='Sans-serif', size=12), nticks=10, showgrid=True, gridwidth=0.5, gridcolor='#D3D3D3'
+        title_text='Número de Reservas Ativas', title_font=dict(family='Sans-serif', size=14, color='black'),
+        tickfont=dict(family='Sans-serif', size=12, color='black'), nticks=10, showgrid=False, gridwidth=0.5, gridcolor='#D3D3D3'
     )
     fig.update_xaxes(
-        tickfont=dict(family='Sans-serif', size=12), nticks=20, showgrid=False, gridwidth=0.5, gridcolor='#D3D3D3'
+        title_text='', title_font=dict(family='Sans-serif', size=1, color='black'),
+        tickfont=dict(family='Sans-serif', size=12, color='black'), nticks=20, showgrid=False, gridwidth=0.5, gridcolor='#D3D3D3'
     )
 
     return fig
@@ -280,21 +251,22 @@ def linha_valor_diaria(df):
 
     # Adicionar as linhas verticais pontilhadas
     for domingo in domingos:
-        fig.add_vline(x=domingo, line_dash="dot", line_color="gray", opacity=0.5)
+        fig.add_vline(x=domingo, line_dash="dot", line_color="gray", opacity=0.3)
 
     # Melhorando o layout
     fig.update_layout(
-        xaxis_title="",
-        yaxis_title="Ganho Diário Total (R$)",
         xaxis=dict(tickangle=90),
-        template="plotly_white"
-    )
+        template="plotly_white",
+        height = 300, margin = dict(l=10, r=10, b=10, t=10))
+
 
     fig.update_yaxes(
-        tickfont=dict(family='Sans-serif', size=12), nticks=10, showgrid=True, gridwidth=0.5, gridcolor='#D3D3D3'
+        title_text='Ganho Diário Total (R$)', title_font=dict(family='Sans-serif', size=14, color='black'),
+        tickfont=dict(family='Sans-serif', size=12, color='black'), nticks=10, showgrid=False,
     )
     fig.update_xaxes(
-        tickfont=dict(family='Sans-serif', size=12), nticks=20, showgrid=False, gridwidth=0.5, gridcolor='#D3D3D3'
+        title_text='', title_font=dict(family='Sans-serif', size=1, color='black'),
+        tickfont=dict(family='Sans-serif', size=12, color='black'), nticks=20, showgrid=False,
     )
 
     return fig
@@ -521,8 +493,15 @@ def plot_hotmap1(df):
                       "</br><b>Reservas:</b> %{z:,.0f}",
         showscale=True,
         colorscale='Portland'))
-    fig.update_layout(height=300, margin=dict(l=20, r=20, b=20, t=20),
-                      paper_bgcolor="#F8F8FF", font={'size': 16})
+    fig.update_layout(height=300, margin=dict(l=10, r=10, b=10, t=10),
+                      paper_bgcolor="white", plot_bgcolor="white", autosize=False, dragmode=False)
+
+    fig.update_yaxes(
+        tickfont=dict(family='Sans-serif', size=12, color='black'),
+    )
+    fig.update_xaxes(
+        tickfont=dict(family='Sans-serif', size=12, color='black'),
+    )
 
     return fig
 
@@ -749,7 +728,13 @@ def plot_hotmap2(df):
                       "</br><b>Compras:</b> %{z:,.0d}",
         showscale=True,
         colorscale='Portland'))
-    fig.update_layout(height=300, margin=dict(l=20, r=20, b=20, t=20),
-                      paper_bgcolor="#F8F8FF", font={'size': 16})
+    fig.update_layout(height=300, margin=dict(l=10, r=10, b=10, t=10),
+                      paper_bgcolor="white", plot_bgcolor="white", autosize=False, dragmode=False)
+    fig.update_yaxes(
+        tickfont=dict(family='Sans-serif', size=12, color='black'),
+    )
+    fig.update_xaxes(
+        tickfont=dict(family='Sans-serif', size=12, color='black'),
+    )
 
     return fig
